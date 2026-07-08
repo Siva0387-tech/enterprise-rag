@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Logs
+*.log
+logs/
+
+# Test/cache files
+.pytest_cache/
+.mypy_cache/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# User-uploaded documents
+data/uploads/

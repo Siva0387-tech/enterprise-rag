@@ -1,8 +1,8 @@
-# Enterprise RAG Chatbot
+# Enterprise RAG Chatbot using LangChain, Pinecone & Groq
 
 ## Overview
 
-The Enterprise RAG Chatbot is a Retrieval-Augmented Generation (RAG) application that enables users to upload documents and ask natural language questions about their content. The application retrieves the most relevant document chunks from a Pinecone vector database and generates context-aware responses using Groq's Llama 3.3 70B model.
+The **Enterprise RAG Chatbot** is a LangChain-based Retrieval-Augmented Generation (RAG) application that enables users to upload enterprise documents and interact with them using natural language. The application processes uploaded documents, generates semantic embeddings, stores them in Pinecone, and retrieves the most relevant information to generate accurate, context-aware responses using Groq's **Llama 3.3 70B Versatile** model.
 
 The project follows a modular architecture with separate components for document ingestion, chunking, embeddings, vector storage, retrieval, and response generation.
 
@@ -10,14 +10,15 @@ The project follows a modular architecture with separate components for document
 
 ## Features
 
-- Upload and process PDF, DOCX, TXT, Excel, and image files
-- OCR support for image-based documents
-- Semantic search using vector embeddings
+- LangChain-based modular RAG architecture
+- Upload and process **PDF, DOCX, TXT, Excel, and image** files
+- OCR support using **Tesseract OCR** for image-based documents
+- Recursive text chunking for efficient retrieval
+- Semantic embeddings using **sentence-transformers/all-MiniLM-L6-v2**
 - Pinecone vector database integration
-- Context-aware answer generation using Groq Llama 3.3 70B
-- Source chunk retrieval for grounded responses
+- Context-aware answer generation using **Groq Llama 3.3 70B Versatile**
+- Source-grounded responses with retrieved document chunks
 - Configurable chunking and retrieval parameters
-- Modular and extensible project structure
 - Streamlit-based user interface
 
 ---
@@ -26,66 +27,49 @@ The project follows a modular architecture with separate components for document
 
 ### Document Ingestion Pipeline
 
-```
-                Upload Document
-                       │
-                       ▼
-              DocumentLoader
-                       │
-                       ▼
-                  Text Chunking
-         (1000 chars, 200 overlap)
-                       │
-                       ▼
-      Generate Embeddings (MiniLM-L6-v2)
-                       │
-                       ▼
-          Store Embeddings in Pinecone
+```mermaid
+flowchart TD
+    A[Upload Document] --> B[DocumentLoader]
+    B --> C[Chunker]
+    C --> D[Generate Embeddings<br/>all-MiniLM-L6-v2]
+    D --> E[Pinecone Vector Database]
 ```
 
 ---
 
 ### Question Answering Pipeline
 
-```
-                 User Question
-                       │
-                       ▼
-           Pinecone Similarity Search
-                 (Top 5 Results)
-                       │
-                       ▼
-             Retrieve Relevant Chunks
-                       │
-                       ▼
-       Build Context + Conversation History
-                       │
-                       ▼
-         Groq Llama 3.3 70B Versatile
-                       │
-                       ▼
-          Generate Answer + Source Chunks
+```mermaid
+flowchart TD
+    A[User Question] --> B[Pinecone Similarity Search]
+    B --> C[Retrieve Top 5 Relevant Chunks]
+    C --> D[Build Context + Chat History]
+    D --> E[Groq Llama 3.3 70B Versatile]
+    E --> F[Answer + Source Chunks]
 ```
 
 ---
 
-## Tech Stack
+## Technology Stack
 
 | Component | Technology |
 |-----------|------------|
-| Language | Python |
-| UI | Streamlit |
-| LLM | Groq - Llama 3.3 70B Versatile |
+| Programming Language | Python |
+| Framework | LangChain |
+| User Interface | Streamlit |
+| Large Language Model | Groq - Llama 3.3 70B Versatile |
+| Embedding Framework | LangChain HuggingFace Embeddings |
 | Embedding Model | sentence-transformers/all-MiniLM-L6-v2 |
 | Vector Database | Pinecone |
 | OCR | Tesseract OCR |
-| Configuration | Python dotenv |
+| Document Processing | PyPDF, python-docx, pandas, Pillow |
+| Configuration | python-dotenv |
 
 ---
 
 ## Project Structure
 
-```
+```text
 Enterprise-RAG/
 │
 ├── chat/
@@ -124,7 +108,7 @@ python -m venv venv
 
 ### Activate the virtual environment
 
-Windows:
+**Windows**
 
 ```bash
 venv\Scripts\activate
@@ -140,9 +124,9 @@ pip install -r requirements.txt
 
 ## Configuration
 
-Create a `.env` file in the project root and configure:
+Create a `.env` file in the project root and configure the following variables:
 
-```
+```text
 GROQ_API_KEY=YOUR_GROQ_API_KEY
 PINECONE_API_KEY=YOUR_PINECONE_API_KEY
 
@@ -152,11 +136,17 @@ PINECONE_REGION=us-east-1
 
 EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 LLM_MODEL=llama-3.3-70b-versatile
+
+CHUNK_SIZE=1000
+CHUNK_OVERLAP=200
+
+TOP_K=5
+SIMILARITY_THRESHOLD=0.15
 ```
 
 ---
 
-## Run the Application
+## Running the Application
 
 ```bash
 streamlit run app.py
@@ -166,13 +156,15 @@ streamlit run app.py
 
 ## Workflow
 
-1. Upload a supported document.
-2. The document is loaded and split into chunks.
-3. Embeddings are generated.
-4. Embeddings are stored in Pinecone.
-5. Ask questions about the uploaded document.
-6. Relevant chunks are retrieved from Pinecone.
-7. Groq Llama generates an answer using the retrieved context.
+1. Upload a supported document through the Streamlit interface.
+2. The document is loaded and processed using LangChain document loaders.
+3. The text is split into chunks using a recursive text splitter.
+4. Semantic embeddings are generated using the Hugging Face embedding model.
+5. Embeddings are stored in the Pinecone vector database.
+6. The user submits a question.
+7. Pinecone retrieves the top 5 most relevant document chunks.
+8. The retrieved context and chat history are sent to the Groq Llama model.
+9. The application generates an answer along with the retrieved source chunks.
 
 ---
 
@@ -182,5 +174,13 @@ streamlit run app.py
 - Metadata filtering
 - Hybrid search
 - Re-ranking
-- Conversation memory improvements
-- Authentication and user management
+- Enhanced conversation memory
+- User authentication and access control
+
+---
+
+## Author
+
+**Siva Siddhardh**
+
+GitHub: https://github.com/Siva0387-tech

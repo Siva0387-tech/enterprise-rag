@@ -18,8 +18,8 @@ striprtf
 pandas
 openpyxl
 
-pytesseract
 Pillow
+easyocr
 
 python-dotenv
 unstructured

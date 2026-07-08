@@ -1,27 +1,33 @@
 from pathlib import Path
-from datetime import datetime
 from typing import List
-from utils.metadata import create_metadata
-from PIL import Image
-import pytesseract
+
+import easyocr
 from langchain_core.documents import Document
 
-# Configure Tesseract path
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-)
+from utils.metadata import create_metadata
 
 
 class ImageLoader:
     """
-    Loads image files and extracts text using OCR.
+    Loads image files and extracts text using EasyOCR.
     """
+
+    def __init__(self):
+        # Initialize EasyOCR reader once
+        self.reader = easyocr.Reader(['en'], gpu=False)
 
     def load(self, file_path: str) -> List[Document]:
 
-        image = Image.open(file_path)
+        # Read text from image
+        results = self.reader.readtext(file_path)
 
-        text = pytesseract.image_to_string(image)
+        # Combine detected text
+        text = "\n".join([result[1] for result in results])
+
+        # Debug output (remove after testing)
+        print("\n===== OCR OUTPUT =====")
+        print(text)
+        print("======================\n")
 
         document_type = Path(file_path).suffix.replace(".", "")
 

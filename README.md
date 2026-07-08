@@ -12,7 +12,7 @@ The project follows a modular architecture with separate components for document
 
 - LangChain-based modular RAG architecture
 - Upload and process **PDF, DOCX, TXT, Excel, and image** files
-- OCR support using **Tesseract OCR** for image-based documents
+- OCR support using EasyOCR for image-based documents
 - Recursive text chunking for efficient retrieval
 - Semantic embeddings using **sentence-transformers/all-MiniLM-L6-v2**
 - Pinecone vector database integration
@@ -61,7 +61,7 @@ flowchart TD
 | Embedding Framework | LangChain HuggingFace Embeddings |
 | Embedding Model | sentence-transformers/all-MiniLM-L6-v2 |
 | Vector Database | Pinecone |
-| OCR | Tesseract OCR |
+| OCR | EasyOCR |
 | Document Processing | PyPDF, python-docx, pandas, Pillow |
 | Configuration | python-dotenv |
 
